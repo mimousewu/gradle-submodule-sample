@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# regex to validate in commit msg
+error_msg="Aborting commit. Your commit message is missing either a JIRA Issue ('[WEB-111]: add new feature')"
+commit_message=$(cat "$1")
+
+check_message_format() {
+  local REGEX='(^\[(WEB|JPW|SEA|CWM)\-[0-9]+\]:|merge)'
+  if [[ ! $commit_message =~ $REGEX ]]; then
+    echo >&2 $error_msg
+    exit 1
+  fi
+}
+
+check_message_format

@@ -1,0 +1,6 @@
+group 'com.gaga.backend'
+
+dependencies {
+    implementation project(':common')
+    
+}

@@ -1,0 +1,38 @@
+apply plugin: 'jacoco'
+
+jacoco {
+	toolVersion = '0.8.4'
+	reportsDir = file("${buildDir}/reports/jacoco")
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled false
+		csv.enabled false
+		html.destination file("${buildDir}/reports/jacocoTestReport")
+	}
+	// afterEvaluate {
+    //     classDirectories = files(classDirectories.files.collect {
+    //         fileTree(dir: it,
+    //             exclude: ['**/model/**/Q**'])
+    //     })
+    // }
+}
+
+test.finalizedBy([jacocoTestReport])
+
+def testCoverageRatio = (project.properties['testCoverageRatio']).toFloat() ?: 0.01
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = testCoverageRatio
+			}
+		}
+	}
+}
+
+check.dependsOn jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification

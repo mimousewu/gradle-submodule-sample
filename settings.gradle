@@ -1,0 +1,5 @@
+rootProject.name = 'gradle-submodule-sample'
+
+include ':common'
+include ':domain'
+include ':app'

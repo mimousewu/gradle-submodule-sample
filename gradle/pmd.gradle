@@ -1,0 +1,24 @@
+apply plugin: 'pmd'
+
+def configDir = "${rootProject.projectDir}/quality"
+
+ext {
+	ignorePmdFailures = project.properties['ignorePmdFailures'] ? 
+		project.properties['ignorePmdFailures'].toBoolean(): true
+}
+
+pmd {
+    toolVersion = '5.4.0'
+    consoleOutput= true
+    ignoreFailures = ignorePmdFailures
+    ruleSetFiles = files("${configDir}/pmd_ruleset.xml")
+    reportsDir = file("build/reports/pmd")
+}
+
+tasks.withType(Pmd){
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}
+

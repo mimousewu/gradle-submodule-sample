@@ -1,0 +1,126 @@
+== Structure
+
+=== base
+[quote]
+----
+// configuration files are listed in root directory
+|_.editconfig
+|_lombokconfig
+|_checkstyle.xml
+|_pre-commit
+|_build.gocd.yaml
+|_gradle
+   |_xxx.gradle // gradle scripts
+|_docker
+   |_xxx.yml // docker-compose files to setup local development environment
+
+----
+
+== Contribution
+
+=== Setup Local Development
+
+Setup Intellij Idea
+
+[source,bash]
+----
+./gradlew cleanIdea idea
+----
+
+Local build
+
+[source,bash]
+----
+./gradlew clean build
+----
+
+with proxy
+[source,bash]
+----
+./gradlew -Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=3128 clean build
+----
+
+*Note:*
+
+When open project via IntelliJ, make sure you *deselect* the option that says *create separate module per source set*. This is selected by default.
+Otherwise, IntelliJ raise ClassNotFound exception / Module cycles error.
+
+==== Setup Local Components
+
+[source,bash]
+----
+cd docker
+docker-compose -p mana up -d
+----
+
+==== Clear Local Components
+
+[source,bash]
+----
+docker-compose -p mana down -v
+----
+`-v` will remove local volumes
+
+=== Checklist for developing an endpoint
+
+[quote]
+----
+an AbstractWebMvcTest to drive the API contract and docs
+a  model fixture to simplify the test data building
+an AbstractJpaTest to drive the RDBMS implementation
+an optionally Spock test to drive the application layer
+----
+
+=== Checklist for defining a new table
+
+[quote]
+----
+a business agnostics id(prefer auto-incremented Id)
+a version for optimistic locking
+a created at for creation time
+a last modified at for last modification time
+a created by for creator username
+----
+e.g
+[source,sql]
+----
+ID NUMERIC(8) NOT NULL AUTO_INCREMENT,
+VERSION NUMERIC(8) NOT NULL DEFAULT 1,
+CREATED_AT DATETIME NOT NULL,
+LAST_MODIFIED_AT DATETIME NOT NULL,
+
+# optional
+CREATED_BY VARCHAR(50) NOT NULL,
+----
+
+
+== Deployment
+=== Create docker images
+[source,bash]
+----
+./gradlew docker
+----
+Then you will get a docker image of ${project.group}/${bootJar.baseName}
+
+=== Json path
+https://github.com/json-path/JsonPath#path-examples
+
+=== Generate random key for appID
+[source,bash]
+----
+cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1
+----
+
+=== Start local service
+start server with dev environment
+[source,bash]
+----
+SPRING_PROFILES_ACTIVE=dev ./gradlew clean bootRun
+----
+
+### Postgres client
+
+[source,bash]
+----
+docker run --rm -it postgres psql -h postgres -U postgres
+----

@@ -1,0 +1,13 @@
+group 'com.thoughtworks.gradle-sample'
+
+dependencies {
+    implementation 'org.apache.commons:commons-lang3'
+
+    implementation 'org.hibernate:hibernate-core'
+    implementation 'org.springframework.data:spring-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    // jackson
+    implementation 'org.springframework.boot:spring-boot-starter-json'
+
+}

@@ -1,0 +1,41 @@
+apply plugin: "findbugs"
+
+ext {
+    ignoreFindbugsFailures = project.properties['ignoreFindbugsFailures'] ? 
+        project.properties['ignoreFindbugsFailures'].toBoolean(): true
+}
+
+findbugs {
+    toolVersion = "3.0.1"
+    sourceSets = [sourceSets.main]
+    ignoreFailures = ignoreFindbugsFailures
+    reportsDir = file("$project.buildDir/reports/findbugs")
+    effort = "max"
+    showProgress = true
+    reportLevel = "high"
+    visitors = ["FindSqlInjection", "SwitchFallthrough"]
+    omitVisitors = ["FindNonShortCircuit"]
+    // includeFilter = file("$rootProject.projectDir/quality/includeFilter.xml")
+    // excludeFilter = file("$rootProject.projectDir/quality/excludeFilter.xml")
+    // excludeBugsFilter = file("$rootProject.projectDir/quality/excludeBugsFilter.xml")
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
+}
+
+// From Gradle 6.0
+// spotbugs {
+  // toolVersion = '4.0.0-beta3'
+// }
+
+// dependencies {
+  // spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+// }
+
+// tasks.withType(com.github.spotbugs.SpotBugsTask) {
+  // configure automatically generated tasks
+// }
